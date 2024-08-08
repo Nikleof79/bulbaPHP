@@ -101,6 +101,12 @@ class BulbaAppRes
         require_once($x);
         exit;
     }
+    public function sendFileTxt($x)
+    {
+        $text = file_get_contents($x);
+        echo $text;
+        exit;
+    }
     public function render($x)
     {
         require_once('./views/' . $x . '.php');
