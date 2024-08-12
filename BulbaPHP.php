@@ -3,7 +3,7 @@ class BulbaApp
 {
     private $staticFolder;
     private $reqUrl;
-    private $middlewares = array();
+    private $middlewares = [];
     // public function documentation()
     // {
     //     include "./docs.md";
@@ -56,7 +56,7 @@ class BulbaApp
         }
     }
 
-    public function use($url = [], $param = "", $callback)
+    public function use($url, $param = null, $callback)
     {
         if (is_array($url) && is_callable($callback) && is_string($param)) {
             $this->middlewares[] = ['urls' => $url, 'param' => $param, 'function' => $callback];
@@ -69,6 +69,7 @@ class BulbaApp
     {
         if (is_string($url) && is_callable($function)) {
             if ($_SERVER['REQUEST_URI'] == $url) {
+                $this->call_midlewares();
                 $req = $this->create_defeult_req();
                 $res = $this->create_defeult_res();
                 $function($req, $res);
