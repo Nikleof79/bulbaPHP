@@ -145,3 +145,17 @@ class BulbaAppReq
                 $this->body = $_REQUEST;
             }
         }
+
+class BulbaAppMySql{
+    private $conn;
+    function __construct($url,$username,$password,$database) {
+        $conn = mysqli_connect("localhost", "root", "", "bulba");
+    }
+    function query($sql_query){
+        return $this->conn->query($sql_query);
+    }
+    function QueryAssoc($sql_query){
+        $result = $this->conn->query($sql_query);
+        return $result->fetch_assoc();
+    }
+}
