@@ -149,7 +149,7 @@ class BulbaAppReq
 class BulbaAppMySql{
     private $conn;
     function __construct($url,$username,$password,$database) {
-        $conn = mysqli_connect("localhost", "root", "", "bulba");
+        $conn = mysqli_connect($url,$username,$password,$database);
     }
     function query($sql_query){
         return $this->conn->query($sql_query);
