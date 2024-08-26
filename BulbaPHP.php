@@ -56,13 +56,20 @@ class BulbaApp
         }
     }
 
-    public function use($url, $param = null, $callback)
+    public function use($url = [], $param = null, $callback)
     {
         if (is_array($url) && is_callable($callback) && is_string($param)) {
             $this->middlewares[] = ['urls' => $url, 'param' => $param, 'function' => $callback];
         } else {
-            throw new BadFunctionCallException("Not avaible paramerts for use function \n bulbaPHP", 228);
+            throw new BadFunctionCallException("Not avaible paramerts for 'use' function \n bulbaPHP", 228);
         }
+    }
+
+    public function session_init(){
+        return function($req,$res) {
+            session_start();
+
+        };
     }
 
     public function req($url, $function)
@@ -134,14 +141,18 @@ class BulbaAppReq
             // }
             public $url;
             public $ip;
-            // public $method;
             public $body;
+            public $session;
 
             public function __construct()
             {
+                try {
+                    $this->session = $_SESSION;
+                } catch (Exception $th) {
+                    unset($this->session);
+                }
                 $this->url = $_SERVER['REQUEST_URI'];
                 $this->ip = $_SERVER['REMOTE_ADDR'];
-                // $this->method = $_SERVER['REQUEST_METHOD'];
                 $this->body = $_REQUEST;
             }
         }
@@ -149,12 +160,12 @@ class BulbaAppReq
 class BulbaAppMySql{
     private $conn;
     function __construct($url,$username,$password,$database) {
-        $conn = mysqli_connect("localhost", "root", "", "bulba");
+        $conn = mysqli_connect($url,$username,$password,$database);
     }
     function query($sql_query){
         return $this->conn->query($sql_query);
     }
-    function QueryAssoc($sql_query){
+    function queryAssoc($sql_query){
         $result = $this->conn->query($sql_query);
         return $result->fetch_assoc();
     }
