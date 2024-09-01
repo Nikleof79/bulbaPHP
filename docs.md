@@ -65,3 +65,17 @@ $app->use(['/urls'],function($req,$res){
 - third parametr is function, its function like in request handler
 
 
+## for work with MYSQL we can use BulbaAppMySql
+```php
+    $mysql = new BulbaAppMySql($url,$username,$password,$database)
+```
+
+## use Mysql for get array
+```php 
+$request = $mysql->QueryAssoc($sql_query);
+```
+
+### Or get mysqli_result
+```php 
+$request = $mysql->query($sql_query);
+```
