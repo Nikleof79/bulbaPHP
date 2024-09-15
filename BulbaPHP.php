@@ -10,6 +10,10 @@ class BulbaApp
     //     include "./docs.md";
     // }
     // NOTE: this function needs to redevelopement because it's showing docs very bad
+    function __construct(){
+        $this->reqUrl = $_SERVER['REQUEST_URI'];
+    }
+
     private function call_midlewares()
     {
         $req = new BulbaAppReq();
@@ -61,26 +65,32 @@ class BulbaApp
 
     public function req($url,$param='' , $function)
     {
+
         if (is_string($url) && is_callable($function)) {
-            if ($_SERVER['REQUEST_URI'] == $url) {
-                $this->call_midlewares();
-                if (isset($param)) {
-                    if ($param = 'a') {
-                        $req_params =[];
-                        $url_splited = explode('/',$url);
-                        for ($i=0; $i < count($url_splited); $i++){
-                            $value = $url_splited[$i];
-                            if (in_array(':',explode('',$value))) {
-                                $req_params[ explode(':',$value)[0] ] = explode('/',$_SERVER['REQUEST_URI'])[$i];
+            if ($param == 'a') {
+                
+                    $this->call_midlewares();
+                    if (isset($param)) {
+                        if ($param = 'a') {
+                            $req_params =[];
+                            $url_splited = explode('/',$url);
+                            for ($i=0; $i < count($url_splited); $i++){
+                                $value = $url_splited[$i];
+                                if (in_array(':',explode('',$value))) {
+                                    $req_params[ explode(':',$value)[0] ] = explode('/',$_SERVER['REQUEST_URI'])[$i];
+                                }
                             }
+                            $req = new BulbaAppReq();
+                        }else{
+                            $req = new BulbaAppRes();
                         }
-                        $req = new BulbaAppReq();
-                    }else{
-                        $req = new BulbaAppRes();
                     }
+            }elseif ($param == '') {
+                if ($_SERVER['REQUEST_URI'] == $url) {
+                    $req = new BulbaAppReq();
+                    $res = new BulbaAppRes();
+                    $function($req, $res);
                 }
-                $res = new BulbaAppRes();
-                $function($req, $res);
             }
         } else {
             throw new Exception("Not avaible paramerts");
