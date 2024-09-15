@@ -1,4 +1,5 @@
 <?php
+
 class BulbaApp
 {
     private $staticFolder;
@@ -9,23 +10,10 @@ class BulbaApp
     //     include "./docs.md";
     // }
     // NOTE: this function needs to redevelopement because it's showing docs very bad
-
-    private function create_defeult_req()
-    {
-        
-
-        return new BulbaAppReq();
-    }
-
-
-    private function create_defeult_res()
-    {
-        return new BulbaAppRes();
-    }
     private function call_midlewares()
     {
-        $req = $this->create_defeult_req();
-        $res = $this->create_defeult_res();
+        $req = new BulbaAppReq();
+        $res = new BulbaAppRes();
         foreach ($this->middlewares as $key => $value) {
             if ($value['param'] == '*') {
                 $value['function']($req, $res);
@@ -68,17 +56,30 @@ class BulbaApp
     public function session_init(){
         return function($req,$res) {
             session_start();
-
         };
     }
 
-    public function req($url, $function)
+    public function req($url,$param='' , $function)
     {
         if (is_string($url) && is_callable($function)) {
             if ($_SERVER['REQUEST_URI'] == $url) {
                 $this->call_midlewares();
-                $req = $this->create_defeult_req();
-                $res = $this->create_defeult_res();
+                if (isset($param)) {
+                    if ($param = 'a') {
+                        $req_params =[];
+                        $url_splited = explode('/',$url);
+                        for ($i=0; $i < count($url_splited); $i++){
+                            $value = $url_splited[$i];
+                            if (in_array(':',explode('',$value))) {
+                                $req_params[ explode(':',$value)[0] ] = explode('/',$_SERVER['REQUEST_URI'])[$i];
+                            }
+                        }
+                        $req = new BulbaAppReq();
+                    }else{
+                        $req = new BulbaAppRes();
+                    }
+                }
+                $res = new BulbaAppRes();
                 $function($req, $res);
             }
         } else {
@@ -101,8 +102,11 @@ class BulbaAppRes
             echo json_encode($x);
             exit;
         } else {
-            throw new OverflowException('unable data');
+            throw new RuntimeException('unable data');
         }
+    }
+    public function include($x){
+        include $x;
     }
     public function sendFile($x)
     {
@@ -142,14 +146,23 @@ class BulbaAppReq
             public $url;
             public $ip;
             public $body;
+            public $param;
             public $session;
 
-            public function __construct()
+            public function __construct($params = null)
             {
-                try {
+                // try {
+                //     $this->session = $_SESSION;
+                // } catch (Exception $th) {
+                //     unset($this->session);
+                // }
+                if (isset($_SESSION) && $_SESSION != [] && $_SESSION != null) {
                     $this->session = $_SESSION;
-                } catch (Exception $th) {
+                }else{
                     unset($this->session);
+                }
+                if (isset($params) && $params != null) {
+                    $this->param = $params;
                 }
                 $this->url = $_SERVER['REQUEST_URI'];
                 $this->ip = $_SERVER['REMOTE_ADDR'];
@@ -157,16 +170,16 @@ class BulbaAppReq
             }
         }
 
-class BulbaAppMySql{
-    private $conn;
-    function __construct($url,$username,$password,$database) {
-        $conn = mysqli_connect($url,$username,$password,$database);
-    }
-    function query($sql_query){
-        return $this->conn->query($sql_query);
-    }
-    function queryAssoc($sql_query){
-        $result = $this->conn->query($sql_query);
-        return $result->fetch_assoc();
-    }
-}
+// class BulbaAppMySql{
+//     private $conn;
+//     function __construct($url,$username,$password,$database) {
+//         $conn = mysqli_connect($url,$username,$password,$database);
+//     }
+//     function query($sql_query){
+//         return $this->conn->query($sql_query);
+//     }
+//     function queryAssoc($sql_query){
+//         $result = $this->conn->query($sql_query);
+//         return $result->fetch_assoc();
+//     }
+// }

@@ -64,7 +64,7 @@ $app->use(['/urls'],function($req,$res){
     - '' middleware will work normal👍
 - third parametr is function, its function like in request handler
 
-
+<!-- 
 ## for work with MYSQL we can use BulbaAppMySql
 ```php
     $mysql = new BulbaAppMySql($url,$username,$password,$database)
@@ -78,4 +78,4 @@ $request = $mysql->QueryAssoc($sql_query);
 ### Or get mysqli_result
 ```php 
 $request = $mysql->query($sql_query);
-```
+``` -->
