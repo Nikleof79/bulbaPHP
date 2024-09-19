@@ -47,11 +47,15 @@ $app = new BulbaApp;
 
 ```php
 $app->use([],'*',session_init()); // this code will initialize session
+
+$app->req('/',function($req,$res){
+    print_r($req.session); // will print all in session
+})
 ```
 
 ## middleware
 In bulbaPHP middleware is middle program between sending page and handling request 
-──>Request──>Middleware──>Rendering──>👍
+──>Request──>Middleware──>Request handler──>Rendering──>👍
 ```php 
 $app->use(['/urls'],function($req,$res){
 //code
@@ -63,6 +67,8 @@ $app->use(['/urls'],function($req,$res){
     - '*' middleware will handle all requests
     - '' middleware will work normal👍
 - third parametr is function, its function like in request handler
+
+## paramameters 
 
 <!-- 
 ## for work with MYSQL we can use BulbaAppMySql

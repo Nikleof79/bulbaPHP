@@ -2,7 +2,7 @@
 
 class BulbaApp
 {
-    private $staticFolder;
+    private $freefolders;
     private $reqUrl;
     private $middlewares = [];
     // public function documentation()
@@ -63,35 +63,48 @@ class BulbaApp
         };
     }
 
-    public function req($url,$param='' , $function)
-    {
+    public function setFreeFolders($folders){
+        if (is_array($folders)) {
+            foreach ($folders as $key => $value) {
+                $this->freefolders[] = $value;
+            }
+        }else{
+            throw new BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
+        }
+    }
 
-        if (is_string($url) && is_callable($function)) {
-            if ($param == 'a') {
-                
-                    $this->call_midlewares();
-                    if (isset($param)) {
-                        if ($param = 'a') {
-                            $req_params =[];
-                            $url_splited = explode('/',$url);
-                            for ($i=0; $i < count($url_splited); $i++){
-                                $value = $url_splited[$i];
-                                if (in_array(':',explode('',$value))) {
-                                    $req_params[ explode(':',$value)[0] ] = explode('/',$_SERVER['REQUEST_URI'])[$i];
-                                }
+    public function req($url,$param , $function)
+    {
+        if ($param == false && count(explode('',$param)) > 1) {
+            $param = 'd';
+        }
+        if (is_string($url) && is_string($param) && is_callable($function)) {
+            $this->call_midlewares();
+                if ($param == 'd' || $param = '' || $param == ' ') {
+                    if ($_SERVER['REQUEST_URI'] == $url) {
+                        $req = new BulbaAppReq();
+                        $res = new BulbaAppRes();
+                        $function($req,$res);
+                    }
+                }else if($param == 'a'){
+                    $url_splited = explode('/',$url);
+                    $requst_url_splited = explode('/',$_SERVER['REQUEST_URI']);
+                    $return_params = array();
+                    if (count($url_splited) == count($requst_url_splited)) {
+                        for ($i=0; $i < count($requst_url_splited); $i++) { 
+                            if (count(explode(':',$url)) > 1) {
+                                //when url has ":"
+                                $return_params[explode(':',$url)[1]] = $requst_url_splited[$i];
+                                $req = new BulbaAppReq($return_params);
+                                $res = new BulbaAppRes();
+                                $function($req,$res);
                             }
-                            $req = new BulbaAppReq();
-                        }else{
-                            $req = new BulbaAppRes();
                         }
                     }
-            }elseif ($param == '') {
-                if ($_SERVER['REQUEST_URI'] == $url) {
-                    $req = new BulbaAppReq();
-                    $res = new BulbaAppRes();
-                    $function($req, $res);
                 }
-            }
+                else{
+                    throw new Exception("Not avaible parametr");
+                }
         } else {
             throw new Exception("Not avaible paramerts");
         }
@@ -120,10 +133,10 @@ class BulbaAppRes
     }
     public function sendFile($x)
     {
-        require_once($x);
+        require_once $x;
         exit;
     }
-    public function sendFileTxt($x)
+    public function sendFileInner($x)
     {
         $text = file_get_contents($x);
         echo $text;
@@ -193,3 +206,4 @@ class BulbaAppReq
 //         return $result->fetch_assoc();
 //     }
 // }
+
