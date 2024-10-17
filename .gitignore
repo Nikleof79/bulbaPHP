@@ -2,3 +2,5 @@
 .idea
 info.php
 router.php
+assets
+views

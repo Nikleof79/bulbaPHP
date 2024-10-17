@@ -1,87 +1,87 @@
-# Start With BulbaPHP
-## including
-```php 
-<?php
-include "./bulba.php";
-$app = new BulbaApp;
-```
-## first handler
+# BulbaPHP Documentation
+
+BulbaPHP is a lightweight PHP micro-framework designed for rapid web development. It provides a simple structure for handling HTTP requests, routing, and middleware.
+
+## Setup
+
+- **1** Copy file ``` BulbaPHP.php ```
+- **2** Paste it into ``` /lib/bulba/BulbaPHP.php ```
+
+## Main Class: BulbaApp
+
+The `BulbaApp` class is the core of the framework. It manages routing and the execution of middleware.
+
+### Main Methods:
+
+- **`__construct()`**: Initializes the application and sets the request URL.
+  
+- **`use($url, $param, $callback)`**: Adds a middleware to the application.
+  
+- **`setFreeFolders($folders)`**: Sets publicly accessible folders.
+  
+- **`req($url, $param, $function)`**: Defines a route with its callback function.
+
+### Middleware Handling
+
+Middlewares can be added using the `use()` method. They can be configured to run for specific URLs or under certain conditions.
+
+## Class: BulbaAppRes
+
+This class handles HTTP responses.
+
+### Main Methods:
+
+- **`send($x)`**: Sends a plain text response.
+  
+- **`sendJson($x)`**: Sends a JSON response.
+  
+- **`include($x)`**: Includes a PHP file.
+  
+- **`sendFile($x)`**: Sends a file to the client.
+  
+- **`render($x, $file_extension = '.php')`**: Renders a view file.
+  
+- **`redirect($x)`**: Redirects to a specified URL.
+  
+- **`header($type, $value)`**: Sets a custom header for the response.
+
+## Class: BulbaAppReq
+
+This class encapsulates HTTP request data.
+
+### Main Properties:
+
+- **`url`**: The URL of the request.
+  
+- **`ip`**: The client's IP address.
+  
+- **`body`**: The body of the request (GET/POST data).
+  
+- **`files`**: Uploaded files.
+  
+- **`param`**: Route parameters.
+  
+- **`session`**: Session data.
+
+## Usage
+
+1. Create an instance of `BulbaApp`.
+2. Define your routes using `req()`.
+3. Add middleware as needed using `use()`.
+4. Set public folders using `setFreeFolders()`.
+
+### Example
+
 ```php
-    $app->req('/', function($req,$res) { <br>
-        $res->send('Hello bulbaPHP'); <br>
-    });
-```
+$app = new BulbaApp();
 
-## send pages
-
-```php
-    $app->req('/',function($req,$res) {
-        $res->sendFile('index.php');
-    })
-```
-### instead of sendFile can be used render it will render all by path "./views"
-
-```php 
-    $app->req('/',function($req,$res){
-        $res->render('index');
-    })
-```
-### if project architecture looks like:
-```
-├── .htaccess
-├── router.php
-├── bulbaPHP.php
-└── views
-    └── index.php
-```
-
-
-## this construction can be used like post/get/put/delete etc queries
-```php
-    $app->req('/',function($req,$res){
-        //code
-    })
-```
-
-## session handler
-
-```php
-$app->use([],'*',session_init()); // this code will initialize session
-
-$app->req('/',function($req,$res){
-    print_r($req.session); // will print all in session
-})
-```
-
-## middleware
-In bulbaPHP middleware is middle program between sending page and handling request 
-──>Request──>Middleware──>Request handler──>Rendering──>👍
-```php 
-$app->use(['/urls'],function($req,$res){
-//code
+// Define a route for the home page
+$app->req('/', 'd', function($req, $res) {
+    $res->send('Hello World!');
 });
-```
-- first parametr is an array of urls for middleware, if request is on url from array middleware will be started.
-- second parametr will be an argument:
-    - '!' middleware will handle all requests not by url/urls
-    - '*' middleware will handle all requests
-    - '' middleware will work normal👍
-- third parametr is function, its function like in request handler
 
-## paramameters 
+// Add session middleware
+$app->use([], '*', $app->session_init());
 
-<!-- 
-## for work with MYSQL we can use BulbaAppMySql
-```php
-    $mysql = new BulbaAppMySql($url,$username,$password,$database)
-```
-
-## use Mysql for get array
-```php 
-$request = $mysql->QueryAssoc($sql_query);
-```
-
-### Or get mysqli_result
-```php 
-$request = $mysql->query($sql_query);
-``` -->
+// Set publicly accessible folders
+$app->setFreeFolders(['public']);
