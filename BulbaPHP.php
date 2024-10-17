@@ -169,11 +169,13 @@ class BulbaAppReq
             public $url;
             public $ip;
             public $body;
+            public $files;
             public $param;
             public $session;
 
             public function __construct($params = null)
             {
+                $this->files = $_FILES;
                 // try {
                 //     $this->session = $_SESSION;
                 // } catch (Exception $th) {
