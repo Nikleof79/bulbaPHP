@@ -1,5 +1,6 @@
 <?php
 
+namespace Bulba;
 class BulbaApp
 {
     private $freefolders;
@@ -61,7 +62,7 @@ class BulbaApp
             $this->middlewares[] = ['urls' => $url, 'param' => $param, 'function' => $callback];
             $this->call_midleware(count($this->middlewares) - 1);
         } else {
-            throw new BadFunctionCallException("Not avaible paramerts for 'use' function \n bulbaPHP", 228);
+            throw new \Exception("Not avaible paramerts for 'use' function \n bulbaPHP", 228);
         }
     }
 
@@ -108,7 +109,7 @@ class BulbaApp
                 }
             }
         } else {
-            throw new BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
+            throw new \BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
         }
     }
 
@@ -141,10 +142,10 @@ class BulbaApp
                 $res = new BulbaAppRes();
                 $function($req, $res);
             } else {
-                throw new Exception("Not avaible parametr");
+                throw new \Exception("Not avaible parametr");
             }
         } else {
-            throw new Exception("Not avaible paramerts");
+            throw new \Exception("Not avaible paramerts");
         }
     }
 }
@@ -163,7 +164,7 @@ class BulbaAppRes
             echo json_encode($x);
             exit;
         } else {
-            throw new RuntimeException('unable data');
+            throw new \RuntimeException('unable data');
         }
     }
     public function include($x)
