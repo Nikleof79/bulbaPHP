@@ -5,7 +5,7 @@ class BulbaApp
     private $freefolders;
     private $reqUrl;
     private $middlewares = [];
-    private $path = '../..';
+    private $path = '.';
     function __construct()
     {
         $this->reqUrl = $_SERVER['REQUEST_URI'];
@@ -79,7 +79,33 @@ class BulbaApp
                 $this->freefolders[] = $value;
             }
             if ($this->checkFreeFolder()) {
-                include "{$this->path}{$this->reqUrl}";
+                $url_splited = explode('.',$this->reqUrl);
+                $file_type = $url_splited[count($url_splited) - 1];
+                $mimeTypes = [
+                    'js' => 'application/javascript',
+                    'html' => 'text/html',
+                    'css' => 'text/css',
+                    'json' => 'application/json',
+                    'png' => 'image/png',
+                    'jpg' => 'image/jpeg',
+                    'jpeg' => 'image/jpeg',
+                    'gif' => 'image/gif',
+                    'pdf' => 'application/pdf',
+                    'txt' => 'text/plain',
+                    'xml' => 'application/xml',
+                    'svg' => 'image/svg+xml',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2',
+                    'mp3' => 'audio/mpeg',
+                    'mp4' => 'video/mp4'
+                ];
+                if (isset($mimeTypes[$file_type])) {
+                    header("Content-type: {$file_type}");
+                    include "{$this->path}{$this->reqUrl}";
+                    exit; 
+                }else{
+                    http_response_code(404);
+                }
             }
         } else {
             throw new BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
@@ -146,7 +172,30 @@ class BulbaAppRes
     }
     public function sendFile($x)
     {
-        require_once $x;
+        $url_splited = explode('.',$x);
+        $file_type = $url_splited[count($url_splited) - 1];
+        $mimeTypes = [
+            'js' => 'application/javascript',
+            'html' => 'text/html',
+            'css' => 'text/css',
+            'json' => 'application/json',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'pdf' => 'application/pdf',
+            'txt' => 'text/plain',
+            'xml' => 'application/xml',
+            'svg' => 'image/svg+xml',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'mp3' => 'audio/mpeg',
+            'mp4' => 'video/mp4'
+        ];
+        if (isset($mimeTypes[$file_type])){require_once $x;}
+        else{
+            http_response_code(404);
+        }
         exit;
     }
     public function sendFileInner($x)
@@ -157,7 +206,7 @@ class BulbaAppRes
     }
     public function render($x, $file_extension = '.php')
     {
-        require_once('./views/' . $x . $file_extension);
+        require_once("./views/{$x}.{$file_extension}");
         exit;
     }
     public function redirect($x)
@@ -187,7 +236,7 @@ class BulbaAppReq
     public $files;
     public $param;
     public $session;
-
+    public $cookie;
     public function __construct($params = null)
     {
         // try {
@@ -207,20 +256,6 @@ class BulbaAppReq
         $this->ip = $_SERVER['REMOTE_ADDR'];
         $this->body = $_REQUEST;
         $this->files = $_FILES;
+        $this->cookie = $_COOKIE;
     }
 }
-
-// class BulbaAppMySql{
-//     private $conn;
-//     function __construct($url,$username,$password,$database) {
-//         $conn = mysqli_connect($url,$username,$password,$database);
-//     }
-//     function query($sql_query){
-//         return $this->conn->query($sql_query);
-//     }
-//     function queryAssoc($sql_query){
-//         $result = $this->conn->query($sql_query);
-//         return $result->fetch_assoc();
-//     }
-// }
-
