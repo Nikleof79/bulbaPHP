@@ -9,7 +9,6 @@ class BulbaApp
     private $reqUrl;
     private $middlewares = [];
     private $path = '.';
-
     function __construct()
     {
         $this->reqUrl = $_SERVER['REQUEST_URI'];
