@@ -1,5 +1,8 @@
 <?php
 
+namespace Bulba;
+
+use Closure;
 class BulbaApp
 {
     private $freefolders;
@@ -23,7 +26,8 @@ class BulbaApp
         return $ret_data;
     }
 
-    private function call_midleware($num)
+
+        private function call_midleware($num)
     {
         $req = new BulbaAppReq();
         $res = new BulbaAppRes();
@@ -55,13 +59,13 @@ class BulbaApp
         }
     }
 
-    public function use($url = [], $param = null, $callback)
+    public function use(array $url = [],string $param = null,Closure $callback)
     {
         if (is_array($url) && is_callable($callback) && is_string($param)) {
             $this->middlewares[] = ['urls' => $url, 'param' => $param, 'function' => $callback];
             $this->call_midleware(count($this->middlewares) - 1);
         } else {
-            throw new BadFunctionCallException("Not avaible paramerts for 'use' function \n bulbaPHP", 228);
+            throw new \Exception("Not avaible paramerts for 'use' function \n bulbaPHP", 228);
         }
     }
 
@@ -72,7 +76,7 @@ class BulbaApp
         };
     }
 
-    public function setFreeFolders($folders)
+    public function setFreeFolders(array $folders)
     {
         if (is_array($folders)) {
             foreach ($folders as $key => $value) {
@@ -108,11 +112,11 @@ class BulbaApp
                 }
             }
         } else {
-            throw new BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
+            throw new \BadFunctionCallException("not expected parameters , expected an array - bulbaPHP");
         }
     }
 
-    public function req($url, $param, $function)
+    public function req(string $url,string $param,Closure $function)
     {
         if ($param == false && count(str_split($param)) > 1) {
             $param = 'd';
@@ -141,10 +145,10 @@ class BulbaApp
                 $res = new BulbaAppRes();
                 $function($req, $res);
             } else {
-                throw new Exception("Not avaible parametr");
+                throw new \Exception("Not avaible parametr");
             }
         } else {
-            throw new Exception("Not avaible paramerts");
+            throw new \Exception("Not avaible paramerts");
         }
     }
 }
@@ -153,22 +157,19 @@ class BulbaAppRes
 {
     public function send($x)
     {
-        echo $x;
+        print_r($x);
         exit;
     }
     public function sendJson($x)
     {
-        if (is_array($x)) {
-            header('Content-Type: application/json');
-            echo json_encode($x);
-            exit;
-        } else {
-            throw new RuntimeException('unable data');
-        }
+        header('Content-Type: application/json');
+        echo json_encode($x);
+        exit;
     }
     public function include($x)
     {
         include $x;
+        return $this;
     }
     public function sendFile($x)
     {
@@ -217,6 +218,12 @@ class BulbaAppRes
     public function header($type, $value)
     {
         header("{$type}: {$value}");
+        return $this;
+    }
+
+    public function status($status){
+        http_response_code($status);
+        return $this;
     }
 }
 
