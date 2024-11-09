@@ -1,0 +1,20 @@
+{
+  "name": "bulbaphp-snippets",
+  "displayName": "Bulbaphp snippets",
+  "description": "snippets for bulbaphp",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "php",
+        "path": "./snippets/snippets.code-snippets"
+      }
+    ]
+  }
+}

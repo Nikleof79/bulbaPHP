@@ -1,0 +1,45 @@
+{
+    "BulbaPHP app": {
+        "prefix": "bulbaapp",
+        "body": [
+            "include '${1:lib/bulba/bulbaPHP.php}';",
+            "$$app = new \\Bulba\\BulbaApp();",
+            "$2"
+        ],
+        "description": "Creates easy bulbaPHP app"
+    },
+    "BulbaPHP request handler": {
+        "prefix": "bulbareq",
+        "body": [
+            "$$app->req('$1','${2:d}',function(\\Bulba\\BulbaAppRes $$req, \\Bulba\\BulbaAppRes $$res){",
+            "    $3",
+            "});"
+        ],
+        "description": "Creates easy bulbaPHP request hadnler"
+    },
+    "BulbaPHP middleware": {
+        "prefix": "bulbause",
+        "body": [
+            "$$app->use(['$1'],'${1:d}',function($$req, \\Bulba\\BulbaAppRes $$res){",
+            "    $3",
+            "});"
+        ],
+        "description": "Creates easy bulbaPHP middleware"
+    }, 
+    "BulbaPHP freefolder": {
+        "prefix": "bulbafree",
+        "body": [
+            "$$app->setFreeFolders([$1]);",
+            "$2"
+        ],
+        "description": "Creates easy bulbaPHP Free Folder"
+    },
+    "BulbaPHP session": {
+        "prefix": "bulbases",
+        "body": [
+            "$$app->use([],'*',$$app->session_init());",
+            "$2"
+        ],
+        "description": "Creates easy bulbaPHP request hadnler"
+    }
+}
