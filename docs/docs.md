@@ -79,3 +79,42 @@ GET /account/alex -> RESPONSE 200 -> "alex"
   - ``` header ``` - sets headers of http response
   - ``` status ``` - sets status of http response
 
+## Midlewares
+midleware creates with function ``` use ``` of ``` BulbaApp ``` objects
+```php 
+<?php
+include ("../lib/bulba/BulbaPHP.php");
+
+$app = new \Bulba\BulbaApp();
+
+$app->use(['/url1','/url2'],"",function(\Bulba\BulbaAppReq $req, \Bulba\BulbaAppRes $res){ 
+    $res->status(200);
+});
+```
+
+its example of easy midleware that will set http response code to 200 if url equals to ``` url1 ``` or ``` url2 ``` , here parameters like in default request handler:
+```php
+$app->use($urls , $param , function(\Bulba\BulbaAppReq $req, \Bulba\BulbaAppRes $res){});
+```
+
+- ``` $urls ``` - array of urls
+- ``` $param ``` - can use as value only 3 values:
+  - ``` ! ``` - middleware will run if url of request url not equals to any of ``` $urls ```
+  - ``` d ``` - default , middleware will run request url equals to any of ``` $urls ```
+  - ``` * ``` - will run middleware for every request
+
+## FreeFolders
+
+freefolder - its a folder when user can get EVERY file usefull for folder with css/images/js and etc
+
+```php
+<?php 
+
+include ("../lib/bulba/BulbaPHP.php");
+
+$app = new \Bulba\BulbaApp();
+
+$app->setFreeFolders(["assets","handlers"]);
+```
+
+this code will set ``` assets ``` as free folder , if you want to add freefolder it has to don't start with ``` / ``` , ``` ./ ``` and etc , only folders in root directory of project . And directory will be without more directories like ``` assets/css ``` 
