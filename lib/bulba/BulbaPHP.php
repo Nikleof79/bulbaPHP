@@ -45,7 +45,7 @@ class BulbaApp
             if ($cond) {
                 $value['function']($req, $res);
             }
-        } else {
+        } else if($value['param'] == 'd') {
             $cond = false;
             foreach ($value['urls'] as $key => $value) {
                 if ($this->reqUrl == $value) {
@@ -171,7 +171,7 @@ class BulbaAppRes
         include $x;
         return $this;
     }
-    public function sendFile($x)
+    public function sendFile($x, $mimeType = 'auto')
     {
         $url_splited = explode('.',$x);
         $file_type = $url_splited[count($url_splited) - 1];
@@ -193,9 +193,12 @@ class BulbaAppRes
             'mp3' => 'audio/mpeg',
             'mp4' => 'video/mp4'
         ];
-        if (isset($mimeTypes[$file_type])){require_once $x;}
-        else{
-            http_response_code(404);
+        if (isset($mimeTypes[$file_type]) && $mimeType != 'auto'){
+            $mimeType = $mimeTypes[$file_type];
+            header("Content-type: {$mimeType}");
+            require_once $x;
+        }else{
+            throw new \Exception("Unexpected mimetype of file , type your own for right file sending", 15);
         }
         exit;
     }
