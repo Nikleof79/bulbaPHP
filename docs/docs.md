@@ -5,8 +5,8 @@
 copy files lib/bulba and .htaccess in your root project folder 
 
 ```php
-//router.php
 <?php
+//router.php
 include ("lib/bulba/BulbaPHP.php");
 
 
